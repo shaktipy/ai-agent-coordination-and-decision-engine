@@ -138,18 +138,12 @@ ai-agent-coordination-engine/
 
 ---
 
-## 🔮 Upcoming (Next Weeks)
+## � License
 
-- **Week 2**: Code Reviewer Agent — reviews generated code for bugs & improvements
-- **Week 3**: Test Writer Agent — generates pytest unit tests automatically
-- **Week 4**: Documentation Agent — writes docstrings and README sections
-- **Week 5**: Decision Engine — smart orchestrator (LangChain Router/Sequential chains)
-- **Week 6**: Web UI (Streamlit/Flask) — full demo interface
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
+## �👤 Author
 
-## 👤 Author
-
-**[Your Name]**  
+**SHAKTI VARDHAN SINGH**  
 Infosys Springboard Virtual Internship 7.0  
 Multi-Agent AI System | Python Full-Stack Track
