@@ -24,3 +24,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Documents & Caches
+*.docx
+.pytest_cache/
