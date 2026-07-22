@@ -1,83 +1,82 @@
 # 🤖 AI Agent Coordination & Decision Engine
 
-> **Infosys Springboard Virtual Internship 7.0** — Multi-Agent Coding Assistant System  
-> Built with **LangChain** + **Google Gemini 1.5 Flash**
+> **Infosys Springboard Virtual Internship 7.0** — Multi-Agent System  
+> Built with **LangChain** + **Google Gemini** + **Groq (Llama 3)**
 
 ---
 
 ## 📌 Project Overview
 
-A multi-agent AI system where specialized agents collaborate to assist developers with coding tasks. Each agent has a defined role, and a central **Decision Engine (Orchestrator)** coordinates them based on the user's request.
+A multi-agent AI system where specialized agents collaborate to assist developers and execute tasks. A central **Master Orchestrator (Decision Engine)** evaluates user queries and routes them to the appropriate agent.
 
 ```
-User Input
-    ↓
-Decision Engine (Orchestrator)
-    ↓
-┌──────────────────────────────────────────────┐
-│  Code Generator → Code Reviewer → Test Writer → Doc Agent  │
-└──────────────────────────────────────────────┘
-    ↓
-Final Output (code + review + tests + docs)
+                    User Input
+                        ↓
+         Master Orchestrator (Router LLM)
+                        ↓
+       ┌─────────────────┴─────────────────┐
+       ▼                                   ▼
+┌──────────────┐                   ┌──────────────┐
+│     CODE     │                   │     TOOL     │
+│  Generator   │                   │    Agent     │
+│    Agent     │                   │   (ReAct)    │
+└──────────────┘                   └──────┬───────┘
+                                          │
+                  ┌───────────────┬───────┼───────────────┬───────────────┐
+                  ▼               ▼       ▼               ▼               ▼
+            ┌───────────┐   ┌──────────┐┌───────────┐   ┌──────────┐    ┌───────────┐
+            │Web Search │   │Calculator││ Datetime  │   │   File   │    │    API    │
+            │   Tool    │   │   Tool   ││   Tool    │   │ Manager  │    │ Connector │
+            └───────────┘   └──────────┘└───────────┘   └──────────┘    └───────────┘
 ```
 
 ---
 
 ## ✅ Progress Tracker
 
-| Agent | Status | Description |
-|-------|--------|-------------|
-| 🟢 Code Generator Agent | **Done** | Generates Python code from task descriptions |
-| 🔴 Code Reviewer Agent | Upcoming | Reviews code for bugs & improvements |
-| 🔴 Test Writer Agent | Upcoming | Generates unit tests |
-| 🔴 Documentation Agent | Upcoming | Writes docstrings & README sections |
-| 🔴 Decision Engine | Upcoming | Orchestrates all agents intelligently |
+| Agent / Component | Status | Description |
+|---|---|---|
+| 🟢 **Code Generator Agent** | **Done** | Generates, modifies, and explains Python code with multi-turn memory. |
+| 🟢 **Tool Agent (ReAct)** | **Done** | A ReAct agent integrated with enterprise tools to query external APIs, execute math, search the web, manage local files, and check datetime. |
+| 🟢 **Master Orchestrator** | **Done** | An LLM-based router that dynamically classifies inputs to route tasks to the CODE or TOOL agent. |
+| 🔴 **Code Reviewer / Test Writer** | Upcoming | Planned future enhancements. |
 
 ---
 
-## 🧠 Agent 1: Code Generator Agent
+## 🧠 Components & Agents
 
-### What it does
-Takes a **natural language task description** and generates **clean, well-commented Python code** using LangChain's chain architecture.
+### 1. Master Orchestrator (Decision Engine)
+- **Role**: Entry point for all user requests.
+- **How it works**: Uses a high-speed router chain (powered by Groq / Llama 3) to analyze queries and output either `CODE` or `TOOL`.
+- **File**: [main.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/main.py)
 
-### Key LangChain Concepts Used
-| Concept | What it does |
-|---------|-------------|
-| `ChatGoogleGenerativeAI` | Connects LangChain to Google Gemini LLM |
-| `ChatPromptTemplate` | Defines agent role (system) + formats user input |
-| `MessagesPlaceholder` | Injects conversation memory into the prompt |
-| `ConversationBufferMemory` | Stores full chat history for multi-turn context |
-| `StrOutputParser` | Parses LLM response to clean string |
-| `chain = prompt \| llm \| parser` | LangChain pipe operator — chains steps together |
+### 2. Code Generator Agent
+- **Role**: Handles developer tasks like writing code, debugging, or explanation.
+- **Implementation**: Utilizes LangChain prompts, conversation memory (`ConversationBufferMemory`), and Gemini LLM.
+- **File**: [code_generator_agent.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/code_generator_agent.py)
 
-### Architecture Flow
-```
-Task Description (str)
-       ↓
-memory.load_memory_variables()   ← Load past conversation
-       ↓
-ChatPromptTemplate                ← Format: system + history + task
-       ↓
-ChatGoogleGenerativeAI (Gemini)   ← LLM generates code
-       ↓
-StrOutputParser                   ← Clean string output
-       ↓
-memory.save_context()             ← Save turn to memory
-       ↓
-Generated Code (str)
-```
+### 3. Tool Agent (ReAct)
+- **Role**: Executes dynamic actions using external tools.
+- **Implementation**: Structured using a ReAct architecture that binds a suite of enterprise tools to the LLM.
+- **File**: [tool_agent.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tool_agent.py)
+- **Enterprise Tools**:
+  - **Web Search**: Queries Google/DuckDuckGo for real-time information ([web_search_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/web_search_tool.py)).
+  - **Calculator**: Securely evaluates math expressions ([calculator_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/calculator_tool.py)).
+  - **Datetime**: Returns current date, time, or relative dates ([datetime_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/datetime_tool.py)).
+  - **File Manager**: Safely creates, reads, and updates local workspace files ([file_manager_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/file_manager_tool.py)).
+  - **API Connector**: Sends HTTP requests (GET/POST) to external endpoints ([api_connector_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/api_connector_tool.py)).
 
 ---
 
 ## ⚙️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| LLM | Google Gemini 1.5 Flash |
+|---|---|
+| LLMs | Google Gemini 1.5 Flash, Groq Llama 3.1 8B |
 | Agent Framework | LangChain |
 | Language | Python 3.10+ |
 | Memory | LangChain ConversationBufferMemory |
-| Config | python-dotenv |
+| Configuration | python-dotenv |
 
 ---
 
@@ -94,30 +93,25 @@ cd ai-agent-coordination-engine
 pip install -r requirements.txt
 ```
 
-### 3. Set Your API Key
+### 3. Setup Environment Variables
 Create a `.env` file in the root directory:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
-GEMINI_API_KEY=your_actual_api_key_here
-```
-> Get your free key at: https://aistudio.google.com/app/apikey
 
-### 4. Run the Agent
+### 4. Run the Engine
 ```bash
 python main.py
 ```
 
-### 5. Example Interaction
-```
-You ➜  Write a binary search function with edge case handling
-# Agent generates code...
-
-You ➜  Now add a version that searches in a rotated sorted array
-# Agent REMEMBERS previous code and refines it (memory in action!)
-
-You ➜  history    # See session summary
-You ➜  clear      # Reset memory
-You ➜  quit       # Exit
-```
+### 5. Interaction Examples
+- **Code task routing**:
+  `You ➜ Write a Python class representing a bank account.`
+  *(Orchestrator routes to Code Generator)*
+- **Tool task routing**:
+  `You ➜ Search the web for latest space news or calculate (234 * 12) + 98.`
+  *(Orchestrator routes to Tool Agent)*
 
 ---
 
@@ -125,24 +119,35 @@ You ➜  quit       # Exit
 
 ```
 ai-agent-coordination-engine/
-│
 ├── agents/
-│   └── code_generator_agent.py   ← Agent 1: Code Generator (LangChain + Gemini)
-│
-├── main.py                        ← CLI entry point (interactive session)
-├── requirements.txt               ← Python dependencies
-├── .env                           ← API key (NOT pushed to GitHub)
-├── .gitignore                     ← Protects .env from being committed
-└── README.md                      ← This file
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── api_connector_tool.py
+│   │   ├── calculator_tool.py
+│   │   ├── datetime_tool.py
+│   │   ├── file_manager_tool.py
+│   │   └── web_search_tool.py
+│   ├── __init__.py
+│   ├── code_generator_agent.py
+│   ├── tool_agent.py
+│   └── tool_orchestrator.py
+├── tests/
+│   └── __init__.py
+├── main.py                        ← Main Entry Point / CLI Orchestrator
+├── requirements.txt
+├── .env                           ← API keys config (Git ignored)
+├── .gitignore
+├── LICENSE
+└── README.md                      ← This documentation file
 ```
 
 ---
 
-## � License
+## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## �👤 Author
+## 👤 Author
 
 **SHAKTI VARDHAN SINGH**  
 Infosys Springboard Virtual Internship 7.0  
