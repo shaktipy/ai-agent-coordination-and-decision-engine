@@ -122,6 +122,9 @@ python -m pytest tests/ -v
 
 ```
 ai-agent-coordination-engine/
+├── assets/
+│   ├── screenshot1.png
+│   └── screenshot2.png
 ├── agents/
 │   ├── reviewers/
 │   │   ├── security_agent.py
