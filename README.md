@@ -1,4 +1,4 @@
-# 🤖 Multi-Agent Automated Code Review & Decision Engine
+# 🤖 Development of Enterprise Workflow Platform with Decision Automation System
 
 > **Infosys Springboard Virtual Internship 7.0**  
 > Built with **LangChain · Groq (Llama 3) · FastAPI · ReportLab**
@@ -7,7 +7,14 @@
 
 ## 📌 Overview
 
-A fully automated, multi-agent code review system. A central **Master Orchestrator (Decision Engine)** analyses the user's request, decides which review dimension is needed, and dispatches to a team of specialised reviewer agents. All findings are merged by an **Aggregator** into a structured health-scored report, exportable as a **PDF** or browsable in a dark-mode **Web Dashboard**.
+A fully automated enterprise workflow platform. A central **Master Orchestrator (Decision Automation System)** analyses the user's request, decides which review dimension is needed, and dispatches to a team of specialised reviewer agents. All findings are merged by an **Aggregator** into a structured health-scored report, exportable as a **PDF** or browsable in a dark-mode **Web Dashboard**.
+
+---
+
+## 📸 Screenshots
+
+![Dashboard View 1](assets/screenshot1.png)
+![Dashboard View 2](assets/screenshot2.png)
 
 ---
 
@@ -169,4 +176,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 **SHAKTI VARDHAN SINGH**  
 Infosys Springboard Virtual Internship 7.0  
-Multi-Agent AI Systems | Python Full-Stack Track
+Enterprise Workflow Platform | Python Full-Stack Track

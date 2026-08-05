@@ -1,5 +1,5 @@
 """
-Agents Package — Multi-Agent Code Review & Decision Engine
+Agents Package — Development of Enterprise Workflow Platform with Decision Automation System
 ===========================================================
 """
 

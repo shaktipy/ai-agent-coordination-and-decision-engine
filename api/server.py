@@ -16,7 +16,7 @@ from agents.orchestrator import MasterOrchestrator
 from agents.aggregator import Aggregator
 from agents.report_renderer import render_report_to_pdf
 
-app = FastAPI(title="Multi-Agent Code Review & Decision Engine")
+app = FastAPI(title="Development of Enterprise Workflow Platform with Decision Automation System")
 
 app.add_middleware(
     CORSMiddleware,

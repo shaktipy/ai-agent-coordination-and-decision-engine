@@ -58,7 +58,7 @@ def render_report_to_pdf(report: FinalReviewReport, output_path: str) -> None:
     )
 
     story = []
-    story.append(Paragraph("Multi-Agent Code Review Report", title_style))
+    story.append(Paragraph("Enterprise Workflow Platform Report", title_style))
     story.append(Paragraph(
         f"<b>Generated:</b> {report.generated_at.strftime('%Y-%m-%d %H:%M UTC')} &nbsp; "
         f"<b>ID:</b> {report.report_id}",

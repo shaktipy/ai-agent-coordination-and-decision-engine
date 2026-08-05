@@ -1,5 +1,5 @@
 """
-agents/orchestrator.py — Master Orchestrator (Decision Engine)
+agents/orchestrator.py — Master Orchestrator (Decision Automation System)
 """
 
 import sys
@@ -12,7 +12,7 @@ from agents.reviewers.quality_agent import QualityAgent
 from agents.reviewers.docs_test_agent import DocsTestAgent
 from models.schemas import AgentReport
 
-ROUTER_SYSTEM_PROMPT = """You are an intent classification router for a multi-agent code review engine.
+ROUTER_SYSTEM_PROMPT = """You are an intent classification router for an enterprise workflow platform.
 Classify the user's intent into EXACTLY ONE of the following categories:
 - SECURITY: If the user specifically mentions security, keys, credentials, or vulnerabilities.
 - PERFORMANCE: If the user specifically mentions speed, efficiency, performance, complexity, loops, or scale.
