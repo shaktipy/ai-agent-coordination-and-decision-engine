@@ -104,17 +104,12 @@ Create `.env` in the project root:
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### 3a · Start the Web Dashboard (recommended)
-```bash
-uvicorn api.server:app --reload
-```
-Open **http://localhost:8000** in your browser.
-
-### 3b · CLI mode
+### 3 · Start the Application
 ```bash
 python main.py
 ```
-Paste Python code, type `RUN` on a new line to start analysis, or `quit` to exit.
+This will start the Web Dashboard and API Server.
+Open **http://localhost:8000** in your browser.
 
 ### 4 · Run tests
 ```bash
