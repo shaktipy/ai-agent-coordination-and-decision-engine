@@ -1,70 +1,72 @@
-# 🤖 AI Agent Coordination & Decision Engine
+# 🤖 Multi-Agent Automated Code Review & Decision Engine
 
-> **Infosys Springboard Virtual Internship 7.0** — Multi-Agent System  
-> Built with **LangChain** + **Google Gemini** + **Groq (Llama 3)**
+> **Infosys Springboard Virtual Internship 7.0**  
+> Built with **LangChain · Groq (Llama 3) · FastAPI · ReportLab**
 
 ---
 
-## 📌 Project Overview
+## 📌 Overview
 
-A multi-agent AI system where specialized agents collaborate to assist developers and execute tasks. A central **Master Orchestrator (Decision Engine)** evaluates user queries and routes them to the appropriate agent.
+A fully automated, multi-agent code review system. A central **Master Orchestrator (Decision Engine)** analyses the user's request, decides which review dimension is needed, and dispatches to a team of specialised reviewer agents. All findings are merged by an **Aggregator** into a structured health-scored report, exportable as a **PDF** or browsable in a dark-mode **Web Dashboard**.
+
+---
+
+## 🏗️ System Architecture
 
 ```
-                    User Input
-                        ↓
-         Master Orchestrator (Router LLM)
-                        ↓
-       ┌─────────────────┴─────────────────┐
-       ▼                                   ▼
-┌──────────────┐                   ┌──────────────┐
-│     CODE     │                   │     TOOL     │
-│  Generator   │                   │    Agent     │
-│    Agent     │                   │   (ReAct)    │
-└──────────────┘                   └──────┬───────┘
-                                          │
-                  ┌───────────────┬───────┼───────────────┬───────────────┐
-                  ▼               ▼       ▼               ▼               ▼
-            ┌───────────┐   ┌──────────┐┌───────────┐   ┌──────────┐    ┌───────────┐
-            │Web Search │   │Calculator││ Datetime  │   │   File   │    │    API    │
-            │   Tool    │   │   Tool   ││   Tool    │   │ Manager  │    │ Connector │
-            └───────────┘   └──────────┘└───────────┘   └──────────┘    └───────────┘
+            ┌─────────────────────────┐
+            │      Web Dashboard       │
+            │  (paste code / upload)   │
+            └────────────┬────────────┘
+                         │  POST /api/review
+                         ▼
+         ┌───────────────────────────────┐
+         │     Master Orchestrator        │
+         │  · Keyword + LLM routing       │
+         │  · Selects agent focus         │
+         └──────────┬────────────────────┘
+                    │
+       ┌────────────┼────────────┬───────────────┐
+       ▼            ▼            ▼               ▼
+ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────┐
+ │ Security │ │  Perf &  │ │ Quality  │ │  Docs &      │
+ │  Agent   │ │ Complexity│ │  Agent   │ │  Tests Agent │
+ └────┬─────┘ └────┬─────┘ └────┬─────┘ └──────┬───────┘
+      │            │            │              │
+  bandit        radon cc     pylint       docstring
+  secrets       radon mi     naming       test-presence
+  unsafe-fn     nested-loop  checker      checker
+      │            │            │              │
+      └────────────┴────────────┴──────────────┘
+                         │
+             ┌───────────────────────┐
+             │      Aggregator        │
+             │  · Merge findings      │
+             │  · Score 0–100         │
+             │  · Executive summary   │
+             └───────────┬───────────┘
+                         │
+             ┌───────────────────────┐
+             │    Report Renderer     │
+             │  · HTML web view       │
+             │  · PDF export          │
+             └───────────────────────┘
 ```
 
 ---
 
-## ✅ Progress Tracker
+## 🧠 Agents & Components
 
-| Agent / Component | Status | Description |
-|---|---|---|
-| 🟢 **Code Generator Agent** | **Done** | Generates, modifies, and explains Python code with multi-turn memory. |
-| 🟢 **Tool Agent (ReAct)** | **Done** | A ReAct agent integrated with enterprise tools to query external APIs, execute math, search the web, manage local files, and check datetime. |
-| 🟢 **Master Orchestrator** | **Done** | An LLM-based router that dynamically classifies inputs to route tasks to the CODE or TOOL agent. |
-| 🔴 **Code Reviewer / Test Writer** | Upcoming | Planned future enhancements. |
-
----
-
-## 🧠 Components & Agents
-
-### 1. Master Orchestrator (Decision Engine)
-- **Role**: Entry point for all user requests.
-- **How it works**: Uses a high-speed router chain (powered by Groq / Llama 3) to analyze queries and output either `CODE` or `TOOL`.
-- **File**: [main.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/main.py)
-
-### 2. Code Generator Agent
-- **Role**: Handles developer tasks like writing code, debugging, or explanation.
-- **Implementation**: Utilizes LangChain prompts, conversation memory (`ConversationBufferMemory`), and Gemini LLM.
-- **File**: [code_generator_agent.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/code_generator_agent.py)
-
-### 3. Tool Agent (ReAct)
-- **Role**: Executes dynamic actions using external tools.
-- **Implementation**: Structured using a ReAct architecture that binds a suite of enterprise tools to the LLM.
-- **File**: [tool_agent.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tool_agent.py)
-- **Enterprise Tools**:
-  - **Web Search**: Queries Google/DuckDuckGo for real-time information ([web_search_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/web_search_tool.py)).
-  - **Calculator**: Securely evaluates math expressions ([calculator_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/calculator_tool.py)).
-  - **Datetime**: Returns current date, time, or relative dates ([datetime_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/datetime_tool.py)).
-  - **File Manager**: Safely creates, reads, and updates local workspace files ([file_manager_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/file_manager_tool.py)).
-  - **API Connector**: Sends HTTP requests (GET/POST) to external endpoints ([api_connector_tool.py](file:///c:/Users/msi/OneDrive/Desktop/AI-agent-coordination-engine/agents/tools/api_connector_tool.py)).
+| Component | Role |
+|---|---|
+| **MasterOrchestrator** | Routes by keyword heuristic or LLM classification to `SECURITY / PERFORMANCE / QUALITY / DOCS / FULL` |
+| **SecurityAgent** | Integrates `bandit`, regex secret scanner, and AST unsafe-function detector |
+| **PerformanceAgent** | Uses `radon cc` (cyclomatic complexity), `radon mi` (maintainability index), and AST nested-loop depth |
+| **QualityAgent** | Runs `pylint` and PEP 8 naming convention AST checker |
+| **DocsTestAgent** | Checks public docstring coverage and unit-test file presence |
+| **Aggregator** | Merges findings, computes health score (critical: −15, high: −8, medium: −4, low: −1), writes executive summary |
+| **ReportRenderer** | Builds styled multi-section PDF from `FinalReviewReport` via `reportlab` |
+| **FastAPI Server** | Serves REST API (`/api/review`, `/api/review/upload`, `/api/review/pdf`) and the web dashboard |
 
 ---
 
@@ -72,46 +74,45 @@ A multi-agent AI system where specialized agents collaborate to assist developer
 
 | Layer | Technology |
 |---|---|
-| LLMs | Google Gemini 1.5 Flash, Groq Llama 3.1 8B |
-| Agent Framework | LangChain |
-| Language | Python 3.10+ |
-| Memory | LangChain ConversationBufferMemory |
-| Configuration | python-dotenv |
+| Agent / LLM | LangChain, Groq (Llama-3.3-70b, Llama-3.1-8b-instant) |
+| Static Analysis | bandit, radon, pylint, AST (stdlib) |
+| Data Contracts | Pydantic v2 |
+| Web API | FastAPI, Uvicorn, Python-Multipart |
+| PDF Export | ReportLab |
+| Dashboard | HTML5, Vanilla CSS, JavaScript (CodeMirror editor) |
+| Tests | pytest |
 
 ---
 
-## 🚀 Setup & Run
+## 🚀 Setup & Usage
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/<your-username>/ai-agent-coordination-engine.git
-cd ai-agent-coordination-engine
-```
-
-### 2. Install Dependencies
+### 1 · Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Setup Environment Variables
-Create a `.env` file in the root directory:
+### 2 · Configure environment
+Create `.env` in the project root:
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### 4. Run the Engine
+### 3a · Start the Web Dashboard (recommended)
+```bash
+uvicorn api.server:app --reload
+```
+Open **http://localhost:8000** in your browser.
+
+### 3b · CLI mode
 ```bash
 python main.py
 ```
+Paste Python code, type `RUN` on a new line to start analysis, or `quit` to exit.
 
-### 5. Interaction Examples
-- **Code task routing**:
-  `You ➜ Write a Python class representing a bank account.`
-  *(Orchestrator routes to Code Generator)*
-- **Tool task routing**:
-  `You ➜ Search the web for latest space news or calculate (234 * 12) + 98.`
-  *(Orchestrator routes to Tool Agent)*
+### 4 · Run tests
+```bash
+python -m pytest tests/ -v
+```
 
 ---
 
@@ -120,25 +121,42 @@ python main.py
 ```
 ai-agent-coordination-engine/
 ├── agents/
+│   ├── reviewers/
+│   │   ├── security_agent.py
+│   │   ├── performance_agent.py
+│   │   ├── quality_agent.py
+│   │   └── docs_test_agent.py
 │   ├── tools/
-│   │   ├── __init__.py
-│   │   ├── api_connector_tool.py
-│   │   ├── calculator_tool.py
-│   │   ├── datetime_tool.py
-│   │   ├── file_manager_tool.py
-│   │   └── web_search_tool.py
-│   ├── __init__.py
-│   ├── code_generator_agent.py
-│   ├── tool_agent.py
-│   └── tool_orchestrator.py
+│   │   ├── bandit_scan_tool.py
+│   │   ├── secret_pattern_tool.py
+│   │   ├── unsafe_function_tool.py
+│   │   ├── radon_complexity_tool.py
+│   │   ├── nested_loop_tool.py
+│   │   ├── pylint_scan_tool.py
+│   │   ├── naming_convention_tool.py
+│   │   ├── docstring_coverage_tool.py
+│   │   ├── test_presence_tool.py
+│   │   └── file_manager_tool.py   ← read-only
+│   ├── utils/
+│   │   └── llm_factory.py
+│   ├── orchestrator.py
+│   ├── aggregator.py
+│   └── report_renderer.py
+├── api/
+│   └── server.py
+├── web/
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
+├── models/
+│   └── schemas.py
 ├── tests/
-│   └── __init__.py
-├── main.py                        ← Main Entry Point / CLI Orchestrator
+│   ├── test_tools.py
+│   └── test_orchestrator.py
+├── main.py
 ├── requirements.txt
-├── .env                           ← API keys config (Git ignored)
-├── .gitignore
-├── LICENSE
-└── README.md                      ← This documentation file
+├── .env
+└── README.md
 ```
 
 ---
@@ -151,4 +169,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 **SHAKTI VARDHAN SINGH**  
 Infosys Springboard Virtual Internship 7.0  
-Multi-Agent AI System | Python Full-Stack Track
+Multi-Agent AI Systems | Python Full-Stack Track

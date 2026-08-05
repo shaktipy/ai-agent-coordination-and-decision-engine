@@ -1,55 +1,29 @@
 """
-Tools Package — AI Agent Coordination & Decision Engine
-=======================================================
-Milestone 2: Custom Enterprise Tools
-
-This package contains all LangChain-compatible tool definitions.
-Each tool is decorated with @tool and can be passed directly to
-a LangChain ReAct AgentExecutor.
-
-Available Tools:
-    - datetime_tool      : Get current date/time and do date calculations
-    - calculator_tool    : Evaluate mathematical expressions safely
-    - file_manager_tool  : Read, write, and list files on the filesystem
-    - web_search_tool    : Search the web using DuckDuckGo (free, no API key)
-    - api_connector_tool : Make GET/POST requests to any REST API endpoint
-
-Author: Infosys Springboard Virtual Internship 7.0
-Project: AI Agent Coordination & Decision Engine
+agents/tools/__init__.py — Central Tools Registry
 """
 
-from agents.tools.datetime_tool import datetime_tool, date_calculator_tool
-from agents.tools.calculator_tool import calculator_tool
-from agents.tools.file_manager_tool import (
-    file_read_tool,
-    file_write_tool,
-    file_list_tool,
-)
-from agents.tools.web_search_tool import web_search_tool
-from agents.tools.api_connector_tool import api_get_tool, api_post_tool
+from agents.tools.file_manager_tool import file_read_tool, file_list_tool
+from agents.tools.bandit_scan_tool import bandit_scan_tool
+from agents.tools.secret_pattern_tool import secret_pattern_scan_tool
+from agents.tools.unsafe_function_tool import unsafe_function_tool
+from agents.tools.radon_complexity_tool import cyclomatic_complexity_tool, maintainability_index_tool
+from agents.tools.nested_loop_tool import nested_loop_detector_tool
+from agents.tools.pylint_scan_tool import pylint_scan_tool
+from agents.tools.naming_convention_tool import naming_convention_tool
+from agents.tools.docstring_coverage_tool import docstring_coverage_tool
+from agents.tools.test_presence_tool import test_presence_tool
 
-# ── All tools in a single list — pass this to AgentExecutor ───────────────────
 ALL_TOOLS = [
-    datetime_tool,
-    date_calculator_tool,
-    calculator_tool,
     file_read_tool,
-    file_write_tool,
     file_list_tool,
-    web_search_tool,
-    api_get_tool,
-    api_post_tool,
-]
-
-__all__ = [
-    "datetime_tool",
-    "date_calculator_tool",
-    "calculator_tool",
-    "file_read_tool",
-    "file_write_tool",
-    "file_list_tool",
-    "web_search_tool",
-    "api_get_tool",
-    "api_post_tool",
-    "ALL_TOOLS",
+    bandit_scan_tool,
+    secret_pattern_scan_tool,
+    unsafe_function_tool,
+    cyclomatic_complexity_tool,
+    maintainability_index_tool,
+    nested_loop_detector_tool,
+    pylint_scan_tool,
+    naming_convention_tool,
+    docstring_coverage_tool,
+    test_presence_tool,
 ]

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent Code Review & Decision Engine</title>
+    <meta name="description" content="AI-powered multi-agent automated code review system for security, performance, quality, and documentation analysis.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/darcula.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo"><span class="gradient-text">ANTIGRAVITY</span> Code Reviewer</div>
+            <div class="subtitle">Multi-Agent Coordination & Decision Engine — Infosys Springboard 7.0</div>
+        </header>
+
+        <main class="dashboard">
+            <!-- Left: Input -->
+            <section class="panel input-panel">
+                <div class="panel-header"><h2>Analyze Source Code</h2></div>
+
+                <div class="input-controls">
+                    <button id="btn-mode-paste" class="tab-btn active">Paste Code</button>
+                    <button id="btn-mode-upload" class="tab-btn">Upload File</button>
+                </div>
+
+                <div class="tab-content">
+                    <div id="paste-area" class="tab-pane active">
+                        <textarea id="code-editor"></textarea>
+                    </div>
+                    <div id="upload-area" class="tab-pane">
+                        <div class="upload-zone" id="drop-zone">
+                            <svg class="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p>Drag & drop a file, or <span class="highlight">browse</span></p>
+                            <input type="file" id="file-input" style="display:none">
+                            <div id="file-info" class="file-info" style="display:none">
+                                <span class="file-name">filename.py</span>
+                                <button id="btn-remove-file" class="btn-icon">✕</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-config">
+                    <h3>Focus Dimension</h3>
+                    <div class="focus-group">
+                        <label class="radio-label"><input type="radio" name="focus" value="FULL" checked><span class="radio-custom"></span> Full Review (All Agents)</label>
+                        <label class="radio-label"><input type="radio" name="focus" value="SECURITY"><span class="radio-custom"></span> Security</label>
+                        <label class="radio-label"><input type="radio" name="focus" value="PERFORMANCE"><span class="radio-custom"></span> Performance & Complexity</label>
+                        <label class="radio-label"><input type="radio" name="focus" value="QUALITY"><span class="radio-custom"></span> Code Quality & Practices</label>
+                        <label class="radio-label"><input type="radio" name="focus" value="DOCS"><span class="radio-custom"></span> Documentation & Tests</label>
+                    </div>
+                    <button id="btn-run" class="btn-primary">
+                        <span class="btn-text">Initiate Multi-Agent Analysis</span>
+                        <div class="loader" id="btn-loader" style="display:none"></div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right: Results -->
+            <section class="panel results-panel" id="results-panel">
+                <div class="empty-state" id="empty-state">
+                    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3>No Report Generated Yet</h3>
+                    <p>Configure your review settings on the left and click analyse.</p>
+                </div>
+
+                <div class="report-content" id="report-content" style="display:none">
+                    <div class="report-header">
+                        <div class="score-card">
+                            <div class="score-ring">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring__circle-bg" stroke="#1E293B" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                    <circle class="progress-ring__circle" stroke="#10B981" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                </svg>
+                                <div class="score-val" id="score-val">—</div>
+                            </div>
+                            <div class="score-label">Code Health Score</div>
+                        </div>
+                        <div class="exec-summary">
+                            <h3>Executive Summary</h3>
+                            <p id="exec-summary-text">Analysing…</p>
+                            <button id="btn-pdf" class="btn-secondary">
+                                ↓ Export PDF Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="agent-breakdowns">
+                        <h3>Detailed Agent Assessments</h3>
+                        <div class="accordion-container" id="agent-accordion"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
