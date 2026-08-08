@@ -3,101 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Development of Enterprise Workflow Platform with Decision Automation System</title>
-    <meta name="description" content="AI-powered enterprise workflow platform with decision automation system for security, performance, quality, and documentation analysis.">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Nexus Code Reviewer — Enterprise Workflow Platform</title>
+    <meta name="description" content="AI-powered enterprise workflow platform with decision automation for security, performance, quality, and documentation analysis. Built with LangChain, Groq, and FastAPI.">
+    <meta property="og:title" content="Nexus Code Reviewer — Enterprise Workflow Platform">
+    <meta property="og:description" content="AI multi-agent code review: security, performance, quality, and docs analysis in one click.">
+    <meta property="og:type" content="website">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/darcula.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-container">
+
+        <!-- Header -->
         <header>
-            <div class="logo"><span class="gradient-text">Nexus</span> Code Reviewer</div>
-            <div class="subtitle">Development of Enterprise Workflow Platform with Decision Automation System — Infosys Springboard 7.0</div>
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <span class="gradient-text">Nexus</span> Code Reviewer
+            </div>
+            <div class="header-right">
+                <div class="subtitle">Enterprise Workflow Platform · Infosys Springboard 7.0</div>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    API Online
+                </div>
+            </div>
         </header>
 
         <main class="dashboard">
-            <!-- Left: Input -->
-            <section class="panel input-panel">
-                <div class="panel-header"><h2>Analyze Source Code</h2></div>
 
+            <!-- ── Left Panel: Input ──────────────────────────────── -->
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">📝</span> Analyze Source Code</h2>
+                </div>
+
+                <!-- Mode tabs -->
                 <div class="input-controls">
-                    <button id="btn-mode-paste" class="tab-btn active">Paste Code</button>
-                    <button id="btn-mode-upload" class="tab-btn">Upload File</button>
+                    <button id="btn-mode-paste" class="tab-btn active">📋 Paste Code</button>
+                    <button id="btn-mode-upload" class="tab-btn">📁 Upload File</button>
                 </div>
 
                 <div class="tab-content">
+                    <!-- Paste mode -->
                     <div id="paste-area" class="tab-pane active">
                         <textarea id="code-editor"></textarea>
                     </div>
+                    <!-- Upload mode -->
                     <div id="upload-area" class="tab-pane">
                         <div class="upload-zone" id="drop-zone">
                             <svg class="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
-                            <p>Drag & drop a file, or <span class="highlight">browse</span></p>
-                            <input type="file" id="file-input" style="display:none">
+                            <p>Drag &amp; drop a <strong>.py</strong> file, or <span class="highlight">browse</span></p>
+                            <input type="file" id="file-input" accept=".py,.txt,.js,.ts,.java,.cs,.go,.rb,.rs,.cpp,.c" style="display:none">
                             <div id="file-info" class="file-info" style="display:none">
                                 <span class="file-name">filename.py</span>
-                                <button id="btn-remove-file" class="btn-icon">✕</button>
+                                <button id="btn-remove-file" class="btn-icon" title="Remove file">✕</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Review config -->
                 <div class="review-config">
-                    <h3>Focus Dimension</h3>
-                    <div class="focus-group">
-                        <label class="radio-label"><input type="radio" name="focus" value="FULL" checked><span class="radio-custom"></span> Full Review (All Agents)</label>
-                        <label class="radio-label"><input type="radio" name="focus" value="SECURITY"><span class="radio-custom"></span> Security</label>
-                        <label class="radio-label"><input type="radio" name="focus" value="PERFORMANCE"><span class="radio-custom"></span> Performance & Complexity</label>
-                        <label class="radio-label"><input type="radio" name="focus" value="QUALITY"><span class="radio-custom"></span> Code Quality & Practices</label>
-                        <label class="radio-label"><input type="radio" name="focus" value="DOCS"><span class="radio-custom"></span> Documentation & Tests</label>
+                    <div class="review-config-label">
+                        💬 Review Instructions / Query
                     </div>
+                    <textarea
+                        id="chat-input"
+                        placeholder="e.g. Focus on security vulnerabilities and hardcoded secrets…"
+                    ></textarea>
+
+                    <!-- Agent progress tracker (hidden until running) -->
+                    <div class="agent-progress" id="agent-progress">
+                        <div class="progress-title">🔄 Running AI Agents…</div>
+                        <div class="agent-step" id="step-security" data-label="Security Agent">
+                            <div class="agent-step-icon">🔒</div>
+                            <span>Security Agent</span>
+                        </div>
+                        <div class="agent-step" id="step-performance" data-label="Performance Agent">
+                            <div class="agent-step-icon">⚡</div>
+                            <span>Performance &amp; Complexity Agent</span>
+                        </div>
+                        <div class="agent-step" id="step-quality" data-label="Quality Agent">
+                            <div class="agent-step-icon">✨</div>
+                            <span>Code Quality Agent</span>
+                        </div>
+                        <div class="agent-step" id="step-docs" data-label="Docs Agent">
+                            <div class="agent-step-icon">📚</div>
+                            <span>Docs &amp; Tests Agent</span>
+                        </div>
+                    </div>
+
                     <button id="btn-run" class="btn-primary">
-                        <span class="btn-text">Initiate Enterprise Workflow Analysis</span>
+                        <span class="btn-text">⚡ Initiate Enterprise Workflow Analysis</span>
+                        <span class="shortcut-hint btn-text">Ctrl+↵</span>
                         <div class="loader" id="btn-loader" style="display:none"></div>
                     </button>
                 </div>
             </section>
 
-            <!-- Right: Results -->
+            <!-- ── Right Panel: Results ───────────────────────────── -->
             <section class="panel results-panel" id="results-panel">
-                <div class="empty-state" id="empty-state">
-                    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <h3>No Report Generated Yet</h3>
-                    <p>Configure your review settings on the left and click analyse.</p>
+
+                <!-- Results / History tab switcher -->
+                <div class="results-tabs">
+                    <button class="result-tab-btn active" id="tab-results">📊 Analysis Report</button>
+                    <button class="result-tab-btn" id="tab-history">🕘 Review History</button>
                 </div>
 
-                <div class="report-content" id="report-content" style="display:none">
-                    <div class="report-header">
-                        <div class="score-card">
-                            <div class="score-ring">
-                                <svg class="progress-ring" width="120" height="120">
-                                    <circle class="progress-ring__circle-bg" stroke="#1E293B" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                                    <circle class="progress-ring__circle" stroke="#10B981" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
-                                </svg>
-                                <div class="score-val" id="score-val">—</div>
+                <!-- ── RESULTS PANE ── -->
+                <div id="results-pane" style="display:flex; flex-direction:column; flex:1;">
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="empty-state">
+                        <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3>No Report Yet</h3>
+                        <p>Paste your Python code, add optional instructions, and click Analyse to get a full AI-powered review.</p>
+                    </div>
+
+                    <!-- Skeleton loader (shown while analysing) -->
+                    <div class="skeleton-wrapper" id="skeleton-wrapper">
+                        <div class="skeleton sk-header"></div>
+                        <div class="skeleton sk-bar"></div>
+                        <div class="skeleton sk-bar short"></div>
+                        <div class="skeleton sk-block"></div>
+                        <div class="skeleton sk-block"></div>
+                    </div>
+
+                    <!-- Report content -->
+                    <div class="report-content" id="report-content">
+                        <!-- Agent Breakdowns (FIRST — findings on top) -->
+                        <div class="agent-breakdowns">
+                            <div class="agent-breakdowns-header">
+                                <h3>Agent Assessments</h3>
+                                <div class="findings-count-total" id="findings-count-total"></div>
                             </div>
-                            <div class="score-label">Code Health Score</div>
+                            <div class="accordion-container" id="agent-accordion"></div>
                         </div>
-                        <div class="exec-summary">
-                            <h3>Executive Summary</h3>
-                            <p id="exec-summary-text">Analysing…</p>
-                            <button id="btn-pdf" class="btn-secondary">
-                                ↓ Export PDF Report
-                            </button>
+
+                        <!-- Score + Executive Summary (BELOW findings) -->
+                        <div class="report-header">
+                            <div class="score-card">
+                                <div class="score-ring">
+                                    <svg class="progress-ring" width="110" height="110">
+                                        <circle class="progress-ring__circle-bg" stroke-width="8" fill="transparent" r="47" cx="55" cy="55"/>
+                                        <circle class="progress-ring__circle" stroke="#10B981" stroke-width="8" fill="transparent" r="47" cx="55" cy="55"/>
+                                    </svg>
+                                    <div class="score-val" id="score-val">—</div>
+                                </div>
+                                <div class="score-label">Health Score</div>
+                            </div>
+                            <div class="exec-summary">
+                                <h3>Executive Summary</h3>
+                                <p id="exec-summary-text">Analysing…</p>
+                                <div class="report-actions">
+                                    <button id="btn-pdf" class="btn-secondary">
+                                        ↓ Export PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── HISTORY PANE ── -->
+                <div class="history-content" id="history-pane">
+                    <div class="history-stat-grid">
+                        <div class="history-stat">
+                            <div class="history-stat-val" id="hist-reviews">—</div>
+                            <div class="history-stat-label">Reviews Run</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-val" id="hist-issues">—</div>
+                            <div class="history-stat-label">Recurring Issues</div>
                         </div>
                     </div>
 
-                    <div class="agent-breakdowns">
-                        <h3>Detailed Agent Assessments</h3>
-                        <div class="accordion-container" id="agent-accordion"></div>
+                    <div class="history-section">
+                        <h4>⚠️ Recurring Issues</h4>
+                        <ul class="history-list" id="hist-issues-list">
+                            <div class="history-empty">No reviews yet — run your first analysis!</div>
+                        </ul>
+                    </div>
+
+                    <div class="history-section">
+                        <h4>📌 Remembered Learnings</h4>
+                        <ul class="history-list" id="hist-learnings-list">
+                            <div class="history-empty">Use "remember …" in the query box to save notes.</div>
+                        </ul>
                     </div>
                 </div>
+
             </section>
         </main>
     </div>
