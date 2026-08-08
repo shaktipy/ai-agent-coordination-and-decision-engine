@@ -72,6 +72,7 @@ A fully automated enterprise workflow platform. A central **Master Orchestrator 
 | **QualityAgent** | Runs `pylint` and PEP 8 naming convention AST checker |
 | **DocsTestAgent** | Checks public docstring coverage and unit-test file presence |
 | **Aggregator** | Merges findings, computes health score (critical: −15, high: −8, medium: −4, low: −1), writes executive summary |
+| **MemoryManager** | Manages short-term context and long-term memory (recurring issues, learnings) for persistent AI awareness |
 | **ReportRenderer** | Builds styled multi-section PDF from `FinalReviewReport` via `reportlab` |
 | **FastAPI Server** | Serves REST API (`/api/review`, `/api/review/upload`, `/api/review/pdf`) and the web dashboard |
 
@@ -143,7 +144,8 @@ ai-agent-coordination-engine/
 │   │   ├── test_presence_tool.py
 │   │   └── file_manager_tool.py   ← read-only
 │   ├── utils/
-│   │   └── llm_factory.py
+│   │   ├── llm_factory.py
+│   │   └── memory_manager.py
 │   ├── orchestrator.py
 │   ├── aggregator.py
 │   └── report_renderer.py
