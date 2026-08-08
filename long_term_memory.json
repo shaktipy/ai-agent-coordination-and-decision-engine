@@ -1,0 +1,23 @@
+{
+    "user_preferences": {},
+    "past_reviews_count": 8,
+    "recurring_issues": [
+        "Documentation & Test Coverage Agent: Missing Function Documentation",
+        "Documentation & Test Coverage Agent: Inadequate Test Coverage",
+        "Security Review Agent: Use of eval() Function",
+        "Security Review Agent: Hardcoded API Key",
+        "Code Quality & Best Practices Agent: Invalid Syntax",
+        "Documentation & Test Coverage Agent: Invalid Syntax in Code",
+        "Performance & Complexity Agent: Inefficient Collision Detection",
+        "Code Quality & Best Practices Agent: Magic Numbers",
+        "Performance & Complexity Agent: Inefficient Nested Loop",
+        "Performance & Complexity Agent: Use of eval() Function",
+        "Performance & Complexity Agent: Hardcoded API Key",
+        "Code Quality & Best Practices Agent: Use of eval() Function",
+        "Code Quality & Best Practices Agent: Inefficient Nested Loop"
+    ],
+    "learnings": [
+        "test learning 123",
+        "test learning"
+    ]
+}
