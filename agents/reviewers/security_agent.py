@@ -36,13 +36,16 @@ class SecurityAgent:
     def __init__(self, provider: str = "groq", model: str = "llama-3.3-70b-versatile", temperature: float = 0.0):
         self.llm = build_llm(provider, model, temperature)
 
-    def run(self, code: str, filename: str = "") -> AgentReport:
+    def run(self, code: str, filename: str = "", context: str = "") -> AgentReport:
         try:
             bandit_res = bandit_scan_tool.invoke(code)
             secrets_res = secret_pattern_scan_tool.invoke(code)
             unsafe_res = unsafe_function_tool.invoke(code)
 
-            prompt = f"Source Code:\n{code}\n\nBandit Results:\n{bandit_res}\n\nSecrets Scan:\n{secrets_res}\n\nUnsafe Functions:\n{unsafe_res}\n"
+            prompt = ""
+            if context:
+                prompt += f"Memory & Context:\n{context}\n\n"
+            prompt += f"Source Code:\n{code}\n\nBandit Results:\n{bandit_res}\n\nSecrets Scan:\n{secrets_res}\n\nUnsafe Functions:\n{unsafe_res}\n"
             messages = [
                 SystemMessage(content=SYSTEM_PROMPT),
                 HumanMessage(content=prompt)

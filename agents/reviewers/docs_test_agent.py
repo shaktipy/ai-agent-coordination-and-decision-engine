@@ -35,12 +35,15 @@ class DocsTestAgent:
     def __init__(self, provider: str = "groq", model: str = "llama-3.3-70b-versatile", temperature: float = 0.0):
         self.llm = build_llm(provider, model, temperature)
 
-    def run(self, code: str, filename: str = "") -> AgentReport:
+    def run(self, code: str, filename: str = "", context: str = "") -> AgentReport:
         try:
             docs_res = docstring_coverage_tool.invoke(code)
             test_res = test_presence_tool.invoke(filename)
 
-            prompt = f"Source Code:\n{code}\n\nDocstring Coverage:\n{docs_res}\n\nTest Presence:\n{test_res}\n"
+            prompt = ""
+            if context:
+                prompt += f"Memory & Context:\n{context}\n\n"
+            prompt += f"Source Code:\n{code}\n\nDocstring Coverage:\n{docs_res}\n\nTest Presence:\n{test_res}\n"
             messages = [
                 SystemMessage(content=SYSTEM_PROMPT),
                 HumanMessage(content=prompt)

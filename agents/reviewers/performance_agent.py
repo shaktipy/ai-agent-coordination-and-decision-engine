@@ -35,13 +35,16 @@ class PerformanceAgent:
     def __init__(self, provider: str = "groq", model: str = "llama-3.3-70b-versatile", temperature: float = 0.0):
         self.llm = build_llm(provider, model, temperature)
 
-    def run(self, code: str, filename: str = "") -> AgentReport:
+    def run(self, code: str, filename: str = "", context: str = "") -> AgentReport:
         try:
             cc_res = cyclomatic_complexity_tool.invoke(code)
             mi_res = maintainability_index_tool.invoke(code)
             loops_res = nested_loop_detector_tool.invoke(code)
 
-            prompt = f"Source Code:\n{code}\n\nCyclomatic Complexity:\n{cc_res}\n\nMaintainability Index:\n{mi_res}\n\nNested Loops:\n{loops_res}\n"
+            prompt = ""
+            if context:
+                prompt += f"Memory & Context:\n{context}\n\n"
+            prompt += f"Source Code:\n{code}\n\nCyclomatic Complexity:\n{cc_res}\n\nMaintainability Index:\n{mi_res}\n\nNested Loops:\n{loops_res}\n"
             messages = [
                 SystemMessage(content=SYSTEM_PROMPT),
                 HumanMessage(content=prompt)

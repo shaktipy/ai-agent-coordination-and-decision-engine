@@ -18,3 +18,4 @@ reportlab
 aiofiles
 jinja2
 pytest
+langgraph
